@@ -1,8 +1,6 @@
 # Laravel Spatial extension
 
-This package is fully untested, undocumented and unstable.
-
-Heavily inspired by the following great packages:
+This package is fully untested, undocumented and unstable and is a combination of the two great packages:
 - [Laravel PostGIS extension](https://github.com/njbarrett/laravel-postgis)
 - [Laravel MySQL spatial extension](https://github.com/grimzy/laravel-mysql-spatial)
 

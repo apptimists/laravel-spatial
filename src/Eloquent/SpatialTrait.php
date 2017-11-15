@@ -2,10 +2,10 @@
 
 namespace LaravelSpatial\Eloquent;
 
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use GeoJson\GeoJson;
 use GeoJSON\Geometry\Geometry;
 use geoPHP;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use LaravelSpatial\Exceptions\SpatialFieldsNotDefinedException;
 
 
@@ -59,7 +59,7 @@ trait SpatialTrait
             if ($value instanceof Geometry) {
                 $geometry = geoPHP::load((object)$value->jsonSerialize(), 'json');
                 $this->geometries[$key] = $value; // Preserve the geometry objects prior to the insert
-                $this->attributes[$key] = $this->getConnection()->raw('ST_GeomFromText(\''.$geometry->out('wkt').'\')');
+                $this->attributes[$key] = $this->getConnection()->raw('ST_GeomFromText(\'' . $geometry->out('wkt') . '\')');
             }
         }
 
