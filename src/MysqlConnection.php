@@ -19,6 +19,7 @@ class MysqlConnection extends \Illuminate\Database\MySqlConnection
                 'multipoint',
                 'multilinestring',
                 'multipolygon',
+                'geomcollection',
                 'geometrycollection',
             ];
             $dbPlatform = $this->getDoctrineSchemaManager()->getDatabasePlatform();

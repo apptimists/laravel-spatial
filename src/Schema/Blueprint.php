@@ -21,9 +21,9 @@ class Blueprint extends \Illuminate\Database\Schema\Blueprint
      * @param      $column
      * @return \Illuminate\Support\Fluent
      */
-    public function point($column)
+    public function point($column, $srid = null)
     {
-        return $this->addColumn('point', $column);
+        return $this->addColumn('point', $column, compact('srid'));
     }
 
     /**
@@ -101,7 +101,7 @@ class Blueprint extends \Illuminate\Database\Schema\Blueprint
      */
     public function spatialIndex($columns, $name = null)
     {
-        return $this->indexCommand('spatial', $columns, $name);
+        return $this->indexCommand('spatialIndex', $columns, $name);
     }
 
     /**
@@ -110,8 +110,29 @@ class Blueprint extends \Illuminate\Database\Schema\Blueprint
      * @param  string|array $index
      * @return \Illuminate\Support\Fluent
      */
-    public function dropSpatial($index)
+    public function dropSpatialIndex($index)
     {
-        return $this->dropIndexCommand('dropIndex', 'spatial', $index);
+        return $this->dropIndexCommand('dropIndex', 'spatialIndex', $index);
+    }
+
+    /**
+     * Enable postgis on this database.
+     * Will create the extension in the database.
+     *
+     * @return \Illuminate\Support\Fluent
+     */
+    public function enablePostgis()
+    {
+        return $this->addCommand('enablePostgis');
+    }
+
+    /**
+     * Disable postgis on this database.
+     * WIll drop the extension in the database.
+     * @return \Illuminate\Support\Fluent
+     */
+    public function disablePostgis()
+    {
+        return $this->addCommand('disablePostgis');
     }
 }

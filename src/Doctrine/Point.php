@@ -4,6 +4,7 @@ namespace LaravelSpatial\Doctrine;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
+use Illuminate\Support\Fluent;
 
 class Point extends Type
 {
@@ -11,7 +12,7 @@ class Point extends Type
 
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        return 'point';
+        return \DB::connection()->getSchemaGrammar()->typePoint(new Fluent);
     }
 
     public function getName()

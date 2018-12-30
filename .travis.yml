@@ -1,0 +1,67 @@
+language: php
+
+sudo: required
+
+services:
+  - docker
+
+php:
+  - '5.6'
+  - '7.0'
+  - '7.1'
+  - '7.2'
+  - '7.3'
+  - hhvm
+  - nightly
+
+env:
+  - MYSQL_VERSION=5.7 PG_VERSION=9.1
+  - MYSQL_VERSION=8.0 PG_VERSION=9.2
+  - MARIA_VERSION=5.5 PG_VERSION=9.3
+  - MARIA_VERSION=10.0 PG_VERSION=9.4
+  - MARIA_VERSION=10.1 PG_VERSION=9.5
+  - MARIA_VERSION=10.2 PG_VERSION=9.6
+  - MARIA_VERSION=10.3 PG_VERSION=10
+  - MARIA_VERSION=10.4 PG_VERSION=11
+
+matrix:
+  allow_failures:
+    - php: '5.6'
+    - php: hhvm
+    - php: nightly
+
+before_install:
+  - sudo /etc/init.d/mysql stop
+  - |
+    if [ -n "${MYSQL_VERSION}" ]
+    then
+      make -C tests/ start_db_mysql oV=${MYSQL_VERSION}
+    else
+      make -C tests/ start_db_maria mV=${MARIA_VERSION}
+    fi
+  - sudo /etc/init.d/postgresql stop
+  - make -C tests/ start_db_postgres pV=${PG_VERSION}
+
+install:
+  - travis_retry composer install
+
+before_script:
+  - mkdir -p build/logs
+  - echo -n Ensuring MySQL/MariaDB is ready; ./tests/wait_container spatial-mysql ; echo
+  - echo -n Ensuring PostgreSQL DB is ready; ./tests/wait_container spatial-postgres ; echo
+
+script:
+  - vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+
+after_script:
+  - |
+    if [ -n "${MYSQL_VERSION}" ]
+    then
+      make -C tests/ rm_db_mysql oV=${MYSQL_VERSION}
+    else
+      make -C tests/ rm_db_maria mV=${MARIA_VERSION}
+    fi
+  - make -C tests/ rm_db_postgres pV=${PG_VERSION}
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

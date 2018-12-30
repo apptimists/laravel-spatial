@@ -3,7 +3,7 @@
 namespace LaravelSpatial\Eloquent;
 
 use GeoJson\Geometry\Geometry;
-use geoPHP;
+use geoPHP\geoPHP;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 class Builder extends EloquentBuilder
@@ -12,8 +12,8 @@ class Builder extends EloquentBuilder
     {
         foreach ($values as $key => &$value) {
             if ($value instanceof Geometry) {
-                $geometry = geoPHP::load((object)$value->jsonSerialize(), 'json');
-                $value = $this->getQuery()->raw('ST_GeomFromText(\'' . $geometry->out('wkt') . '\')');
+                $wkt = geoPHP::load(json_decode(json_encode($value->jsonSerialize()), false), 'json')->out('wkt');
+                $value = $this->getQuery()->raw("ST_GeomFromText('{$wkt}')");
             }
         }
 

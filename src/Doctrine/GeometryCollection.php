@@ -4,6 +4,7 @@ namespace LaravelSpatial\Doctrine;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
+use Illuminate\Support\Fluent;
 
 class GeometryCollection extends Type
 {
@@ -11,7 +12,7 @@ class GeometryCollection extends Type
 
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        return 'geometrycollection';
+        return \DB::connection()->getSchemaGrammar()->typeGeometrycollection(new Fluent);
     }
 
     public function getName()

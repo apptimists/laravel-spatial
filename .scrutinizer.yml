@@ -1,0 +1,35 @@
+build:
+  nodes:
+    analysis:
+      project_setup:
+        override:
+          - 'true'
+      tests:
+        override:
+          - php-scrutinizer-run
+          - command: phpcs-run
+            use_website_config: false
+
+    tests:
+      environment:
+        docker: true
+        php:
+          version: 7.2
+      dependencies:
+        before:
+          - sudo service mysql stop
+          - sudo service postgresql stop
+          - make -C tests/ start_db_mysql start_db_postgres oV=8.0 pV=11
+      tests:
+        override:
+          - command: ./vendor/bin/phpunit --coverage-clover=my-coverage-file
+            coverage:
+              file: my-coverage-file
+              format: php-clover
+
+checks:
+  php: true
+
+filter:
+  excluded_paths:
+    - tests/*
