@@ -4,6 +4,7 @@ namespace LaravelSpatial\Doctrine;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
+use Illuminate\Support\Fluent;
 
 class MultiPoint extends Type
 {
@@ -11,7 +12,7 @@ class MultiPoint extends Type
 
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        return 'multipoint';
+        return \DB::connection()->getSchemaGrammar()->typeMultipoint(new Fluent);
     }
 
     public function getName()

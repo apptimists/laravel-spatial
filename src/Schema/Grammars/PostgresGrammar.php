@@ -85,42 +85,25 @@ class PostgresGrammar extends \Illuminate\Database\Schema\Grammars\PostgresGramm
     }
 
     /**
-     * Adds a statement to add a geometrycollection geometry column
+     * Adds a statement to add a geometry geometry column
      *
-     * @param Blueprint $blueprint
-     * @param Fluent $command
+     * @param Fluent $column
      * @return string
      */
-    public function compileGeometrycollection(Blueprint $blueprint, Fluent $command)
+    public function typeGeometry(Fluent $column)
     {
-        $command->type = 'GEOMETRYCOLLECTION';
-
-        return $this->compileGeometry($blueprint, $command);
+        return 'GEOGRAPHY(GEOMETRY, 4326)';
     }
 
     /**
-     * Adds a statement to add a geometry column
+     * Adds a statement to add a geometrycollection geometry column
      *
-     * @param Blueprint $blueprint
-     * @param Fluent $command
+     * @param Fluent $column
      * @return string
      */
-    protected function compileGeometry(Blueprint $blueprint, Fluent $command)
+    public function typeGeometrycollection(Fluent $column)
     {
-
-        $dimensions = $command->dimensions ?: 2;
-        $typmod = $command->typmod ? 'true' : 'false';
-        $srid = $command->srid ?: 4326;
-
-        return sprintf(
-            "SELECT AddGeometryColumn('%s', '%s', %d, '%s', %d, %s)",
-            $blueprint->getTable(),
-            $command->column,
-            $srid,
-            strtoupper($command->type),
-            $dimensions,
-            $typmod
-        );
+        return 'GEOGRAPHY(GEOMETRYCOLLECTION, 4326)';
     }
 
     /**

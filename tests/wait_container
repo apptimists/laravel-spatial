@@ -1,0 +1,22 @@
+#!/bin/bash
+
+function getContainerHealth {
+  docker inspect --format "{{json .State.Health.Status }}" $1 2>&1
+}
+
+function waitContainer {
+  while STATUS=$(getContainerHealth $1); [[ "$STATUS" != '"healthy"' ]]; do
+    if [[ "$STATUS" == $'\nTemplate parsing error'* ]]; then
+      echo " $1 Failed!"
+      exit 255
+    fi
+    if [[ "$STATUS" == '"unhealthy"' ]]; then
+      docker inspect --format "{{json .State }}" $1 2>&1
+    else
+      echo -n .
+    fi
+    sleep 5
+  done
+}
+
+waitContainer $@

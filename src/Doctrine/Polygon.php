@@ -4,6 +4,7 @@ namespace LaravelSpatial\Doctrine;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
+use Illuminate\Support\Fluent;
 
 class Polygon extends Type
 {
@@ -11,7 +12,7 @@ class Polygon extends Type
 
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        return 'polygon';
+        return \DB::connection()->getSchemaGrammar()->typePolygon(new Fluent);
     }
 
     public function getName()
